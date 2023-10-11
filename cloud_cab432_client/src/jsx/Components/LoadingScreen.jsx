@@ -1,7 +1,7 @@
 // LoadingScreen.js
 import React from "react";
 import { FaSpinner } from "react-icons/fa";
-import { generateSpaces } from "./helper";
+import {generateSpaces} from "../../helper/helper";
 
 function LoadingScreen({ loadingtext }) {
   return (
