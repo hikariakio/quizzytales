@@ -30,7 +30,19 @@ Quizzes may not always be accurate. Use at your own discretion.
 
 ## Screenshots
 
-![translation](https://github.com/hikariakio/quizzytales/blob/main/gifs/tales.gif)
+###  Story Generator
+
+![tale](https://github.com/hikariakio/quizzytales/blob/main/gifs/tales.gif)
+
+
+### Translation
+
+![translation](https://github.com/hikariakio/quizzytales/blob/main/gifs/trans.gif)
+
+
+### Quiz Generator
+
+![quiz](https://github.com/hikariakio/quizzytales/blob/main/gifs/quiz.gif)
 
 
 
