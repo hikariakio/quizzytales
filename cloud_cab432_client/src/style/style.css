@@ -1,0 +1,275 @@
+body {
+    font-family: Bahnschrift, sans-serif;}
+
+#root {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.center {
+    text-align: center;
+}
+
+.left {
+    text-align: left;
+}
+
+
+.right {
+    text-align: right;
+}
+
+.main-button{
+    border-radius: 10px;
+    background-color: #333333;
+    color:white;
+    padding: 5px 15px;
+    font-size: 18px;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+    margin-top: 10px;
+}
+
+
+/*LeftMain*/
+
+.main-left-container{
+    padding: 10px;
+    margin-top: auto;
+}
+
+/*RightMain*/
+
+.main-right-container{
+    padding: 10px;
+    border-radius: 15px;
+    border : 5px outset black;
+    height : 100%;
+}
+
+/*SettingsContainer*/
+.setting-container *{
+    margin-bottom: 10px;
+}
+
+/* InstructionContainer*/
+.instruction-container {
+    display: grid;
+    place-items: center;
+    height: 100%;
+    align-content: center;
+    color: rgba(89, 89, 89, 0.6)
+}
+
+.keyword-table-container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 3px;
+    border: 2px solid black;
+    padding: 10px 0px 10px 20px;
+
+}
+
+.keyword-element {
+    list-style-type: none;
+}
+
+
+/*Dropzone*/
+.dropzone-border {
+    border: 2px dashed #507cbb;
+    text-align: center;
+    position: relative;
+    min-height: 134px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.dropzone {
+    cursor: pointer;
+    width: 100%;
+    min-height: 134px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+}
+
+.dropzone-button{
+    padding: 0 10px;
+    cursor:pointer;
+    margin-right:  2%;
+    background-color: transparent;
+    border: 1px solid black;
+    border-radius: 3px;
+    color : black
+}
+
+
+.manage-photobtns-container{
+    margin: 10px;
+    display: flex;
+    justify-content: right;
+}
+
+
+.selected-images {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+
+}
+
+.selected-image {
+    position: relative;
+}
+
+.image-container {
+    position: relative;
+    width: 150px;
+    overflow: hidden;
+    background-color: black;
+}
+
+.selected-image img {
+
+    height: 100px;
+}
+
+.image-name {
+    position: absolute;
+    top: 0;
+    left: 0;
+    color: white;
+    background-color: rgba(0, 0, 0, 0.7);
+    font-size: 8px;
+}
+
+.selected-image button {
+    position: absolute;
+    top: 0;
+    right: 0;
+
+    background: transparent;
+    border: 1px solid #3f3f3f;
+    font-size: 12px;
+    color: red;
+    background-color: #282727;
+    cursor: pointer;
+}
+
+
+.quiz-container{
+    text-align: left;
+    padding: 3px;
+    border-radius: 10px;
+}
+
+.quiz-container p{
+    font-weight: bold;
+    font-size: 18px;
+}
+
+
+.option-label {
+    background-color: #333;
+    color: white;
+    border-radius: 10px;
+    padding: 10px 10px;
+    margin-bottom: 10px;
+    margin-right: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    display: flex;
+
+    align-items: center;
+
+}
+.option-label-correct {
+    background-color: #599259;
+
+
+}
+
+.option-text {
+    flex-grow: 1;
+    text-align: left;
+}
+
+
+
+.checkbox-input input {
+    border: 10px solid green;
+    width: 20px;
+    height: 20px;
+    accent-color: white;
+}
+
+
+/*HeaderBar*/
+
+.header-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    background-color: #333;
+    color: #fff;
+}
+
+.title {
+    font-size: 32px;
+    font-weight: bold;
+}
+
+.links a {
+    margin-left: 20px;
+    color: #fff;
+    text-decoration: none;
+}
+
+.links a:hover {
+    text-decoration: underline;
+}
+
+/*Footer*/
+/* Footer.css */
+.footer {
+    background-color: #333; /* Change this to your desired background color */
+    color: white; /* Change this to your desired text color */
+    padding: 20px; /* Adjust the padding as needed */
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+}
+
+.keyword-container {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    border: 1px solid #333333;
+    padding: 5px;
+    cursor: text;
+}
+
+.keyword-box {
+    background-color: #333333;
+    color:white;
+    padding: 5px 10px;
+    margin: 5px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+input[type="text"] {
+    flex: 1;
+    padding: 5px;
+    border: 1px solid rgba(0, 0, 0, 0.33);
+    outline: none;
+    margin: 5px;
+}
+

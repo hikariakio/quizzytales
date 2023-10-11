@@ -1,0 +1,4 @@
+{
+  "backendAPI1": "http://ec2-54-252-227-177.ap-southeast-2.compute.amazonaws.com:8000",
+  "backendAPI": "http://localhost:3001"
+}
