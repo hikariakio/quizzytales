@@ -132,3 +132,4 @@ dist
 # mine
 .idea
 build
+.DS_STORE
