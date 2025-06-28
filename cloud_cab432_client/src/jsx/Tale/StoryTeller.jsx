@@ -17,59 +17,63 @@ function StoryTeller() {
   const generateStory = async () => {
     const backendURL = await fetchConfig();
 
-    const formData = new FormData();
-
-    if (selectedGenre == null || selectedGenre === "") {
+    if (!selectedGenre) {
       alert(`Choose a story's genre`);
       return;
     }
 
-    if (selectedRes == null || selectedRes === "") {
+    if (!selectedRes) {
       alert(`Choose a story's resolution`);
       return;
     }
-
-    formData.append("addData", keywords.join(","));
-    formData.append("genre", selectedGenre.toString());
-    formData.append("language", selectedLanguage.toString());
-    formData.append("resolution", selectedRes.toString());
 
     if (selectedImages.length === 0) {
       alert("At least upload 1 image");
       return;
     }
 
-    selectedImages.forEach((file) => {
-      formData.append("images", file);
-    });
+    // Convert all selected images to base64 strings
+    const convertFilesToBase64 = async (files) => {
+      const promises = files.map((file) => {
+        return new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onloadend = () => {
+            const base64 = reader.result.replace(/^data:image\/\w+;base64,/, "");
+            resolve(base64);
+          };
+          reader.onerror = reject;
+          reader.readAsDataURL(file);
+        });
+      });
 
-    setStoryLoadingText(generateLoadingStory("en")); //todo: add more languages
+      return Promise.all(promises);
+    };
 
+    const base64Images = await convertFilesToBase64(selectedImages);
+
+    const payload = {
+      images: base64Images,
+      addData: keywords.join(","),
+      genre: selectedGenre.toString(),
+      language: selectedLanguage.toString(),
+      resolution: selectedRes.toString(),
+    };
+
+    setStoryLoadingText(generateLoadingStory("en"));
     setStoryReady(false);
 
     try {
-      await axios
-        .post(`${backendURL}/generate`, formData)
-        .then((response) => {
-          // Handle success
-          console.log("Response data:", response.data);
-          setStoryData(response.data);
-          setShowStory(response.data["translations"][selectedLanguage]);
-          setStoryLoadingText("");
-          setStoryReady(true);
-          setPrevLanguage(selectedLanguage);
+      const response = await axios.post(`${backendURL}/generate`, payload);
 
-          // You can access the response data using response.data
-        })
-        .catch((error) => {
-          // Handle error
-          setStoryLoadingText("");
-          console.error("Error:", error);
-        });
-
-      // alert('Images uploaded successfully');
+      console.log("Response data:", response.data);
+      setStoryData(response.data);
+      setShowStory(response.data["translations"][selectedLanguage]);
+      setStoryLoadingText("");
+      setStoryReady(true);
+      setPrevLanguage(selectedLanguage);
     } catch (error) {
-      console.error("Error uploading images", error);
+      setStoryLoadingText("");
+      console.error("Error:", error);
     }
   };
 

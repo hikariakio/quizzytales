@@ -33,41 +33,55 @@ function QuizMaker() {
   const generateQuiz = async () => {
     const backendURL = await fetchConfig();
 
-    const formData = new FormData();
-
     if (selectedImages.length === 0) {
       alert("Need to upload photos.");
       return;
     }
 
-    formData.append("addData", keywords.join(","));
-
-    selectedImages.forEach((file) => {
-      formData.append("images", file);
-    });
-    setQuizLoadingText(generateLoadingQuiz("en"));
-    try {
-      await axios
-        .post(`${backendURL}/quiz`, formData)
-        .then((response) => {
-          // Handle success
-          console.log("Response data:", response.data);
-          setQuizData(response.data);
-          setQuizReady(true);
-          setQuizLoadingText("");
-          // You can access the response data using response.data
-        })
-        .catch((error) => {
-          // Handle error
-          console.error("Error:", error);
-          setQuizLoadingText("");
+    // Convert files to base64
+    const convertFilesToBase64 = async (files) => {
+      const promises = files.map((file) => {
+        return new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onloadend = () => {
+            const base64 = reader.result.replace(/^data:image\/\w+;base64,/, "");
+            resolve(base64);
+          };
+          reader.onerror = reject;
+          reader.readAsDataURL(file);
         });
+      });
 
-      // alert('Images uploaded successfully');
+      return Promise.all(promises);
+    };
+
+    const base64Images = await convertFilesToBase64(selectedImages);
+
+    const payload = {
+      images: base64Images,
+      addData: keywords.join(","),
+    };
+
+    setQuizLoadingText(generateLoadingQuiz("en"));
+    setQuizReady(false);
+
+    try {
+      const response = await axios.post(`${backendURL}/quiz`, payload, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      console.log("Response data:", response.data);
+      setQuizData(response.data);
+      setQuizReady(true);
+      setQuizLoadingText("");
     } catch (error) {
-      console.error("Error uploading images", error);
+      console.error("Error:", error);
+      setQuizLoadingText("");
     }
   };
+
 
   return (
     <>

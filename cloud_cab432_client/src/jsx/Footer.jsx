@@ -119,7 +119,7 @@ export function Footer() {
               }}
             >
               <CreditModal />
-              <ViewCount />
+              {/*<ViewCount />*/}
             </div>
           </div>
         </Grid>

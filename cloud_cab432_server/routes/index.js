@@ -2,7 +2,7 @@ var express = require("express");
 
 var router = express.Router();
 const multer = require("multer");
-const { filesToKeywords } = require("../Managers/CloudVisionManager");
+const { filesToKeywords,base64StringsToKeywords } = require("../Managers/CloudVisionManager");
 const { generateStory, generateQuiz } = require("../Managers/OpenAIManager");
 const { translateText } = require("../Managers/CloudTranslateManager");
 const {
@@ -19,52 +19,83 @@ router.get("/", function (req, res, next) {
 const storage = multer.memoryStorage(); // Store images in memory for this example
 const upload = multer({ storage });
 
-router.post("/generate", upload.array("images"), async (req, res, next) => {
-  // console.log(req.files); // This will contain the uploaded images
+router.post("/generate", async (req, res) => {
+  const {
+    images = [],
+    addData = "",
+    genre,
+    resolution,
+    language = "en",
+  } = req.body;
 
-  const addData = req.body.addData;
-  const genre = req.body.genre;
-  const resolution = req.body.resolution;
+  console.log("GENERAERETETEET");
+  console.log(req.body.images);
+  console.log(req.body.genre);
+  console.log(req.body.resolution);
 
-  const language = req.body.language;
-
-  const allKeyWords = await filesToKeywords(req.files);
-
-  const storyObject = await generateStory(genre, resolution, [
-    ...allKeyWords,
-    ...addData.split(/\s*,\s*/),
-  ]);
-
-  const storyRes = storyObject.choices[0].message.content;
-
-  const result = {};
-  result.genre = genre;
-  result.resolution = resolution;
-  result.addData = addData;
-  result.keywords = allKeyWords;
-  result.translations = {};
-
-  result.translations["en"] = storyRes;
-
-  if (language !== "en") {
-    const transObject = await translateText(storyRes, language);
-    result.translations[language] = transObject[0];
+  if (images.length === 0) {
+    return res.status(400).json({ error: "No images received" });
   }
 
-  res.status(200).send(result);
+  try {
+    const allKeyWords = await base64StringsToKeywords(images);
+
+    const storyObject = await generateStory(genre, resolution, [
+      ...allKeyWords,
+      ...addData.split(/\s*,\s*/),
+    ]);
+
+    const storyRes = storyObject.choices[0].message.content;
+
+    const result = {
+      genre,
+      resolution,
+      addData,
+      keywords: allKeyWords,
+      translations: {
+        en: storyRes,
+      },
+    };
+
+    if (language !== "en") {
+      const transObject = await translateText(storyRes, language);
+      result.translations[language] = transObject[0];
+    }
+
+    res.status(200).send(result);
+  } catch (err) {
+    console.error("Error during story generation:", err);
+    res.status(500).send({
+      error: "Image processing failed",
+      detail: err.message,
+    });
+  }
 });
 
-router.post("/quiz", upload.array("images"), async (req, res, next) => {
-  const addData = req.body.addData;
-  const allKeyWords = await filesToKeywords(req.files);
-  const quizData = await generateQuiz(allKeyWords, addData.split(/\s*,\s*/));
+router.post("/quiz", async (req, res) => {
+  const { images = [], addData = "" } = req.body;
 
-  const result = {};
-  result.keywords = allKeyWords;
-  result.addData = addData;
-  result.quiz = JSON.parse(quizData.choices[0].message.content);
-  console.log(result);
-  res.status(200).send(result);
+  if (images.length === 0) {
+    return res.status(400).json({ error: "No images provided" });
+  }
+
+  try {
+    const allKeyWords = await base64StringsToKeywords(images);
+
+    const quizData = await generateQuiz(allKeyWords, addData.split(/\s*,\s*/));
+
+    const result = {
+      keywords: allKeyWords,
+      addData: addData,
+      quiz: JSON.parse(quizData.choices[0].message.content),
+    };
+
+    console.log(result);
+    res.status(200).send(result);
+  } catch (err) {
+    console.error("Quiz generation failed:", err);
+    res.status(500).json({ error: "Failed to generate quiz", detail: err.message });
+  }
 });
 
 router.post("/translate", async (req, res, next) => {
